@@ -1,58 +1,63 @@
 <?php
+
+namespace UXPA\JUS;
+
 /**
  * This is the file-level doc comment.
  * It provides an overview of the file's purpose and any other relevant information.
- * 
+ *
  * @category Theme
  * @package  Custom
  * @author   Greg Miller <hello@gregmiller.io>
  * @license  GPL https://www.gnu.org/licenses/gpl-3.0.html
  * @version  GIT:
  * @link     https://github.com/shrinkray/JUS
+ * @requires PHP 7.4
  */
-
-// Add RSS links to <head> section
-add_theme_support('automatic-feed-links');
 
 /**
  * Load new jquery
- * 
+ *
  * @return [type]
  */
-function Load_Custom_jquery() 
+function Load_Custom_jquery()
 {
     if (!is_admin()) {
         wp_deregister_script('jquery');
         wp_register_script(
-            'jquery', get_template_directory_uri() . 
-            "/js/jquery-1.9.1.min.js", [], null, true
+            'jquery',
+            get_template_directory_uri() .
+            "/js/jquery-1.9.1.min.js",
+            [],
+            null,
+            true
         );
         wp_enqueue_script('jquery');
     }
 }
-add_action('wp_enqueue_scripts', 'load_custom_jquery');
+add_action('wp_enqueue_scripts', 'Load_Custom_jquery');
 
 /**
  * Clean up the <head>
- * 
+ *
  * @return [type]
  */
-function Remove_Head_links() 
+function Remove_Head_links()
 {
     remove_action('wp_head', 'rsd_link');
     remove_action('wp_head', 'wlwmanifest_link');
     remove_action('wp_head', 'wp_generator');
 }
-add_action('init', 'remove_head_links');
+add_action('init', 'Remove_Head_links');
 
 
 
 /**
  * Declare sidebar widget zones
- * 
+ *
  * @return [type]
  */
-function Register_Custom_sidebars() 
+function Register_Custom_sidebars()
 {
 
     $sidebars = [
@@ -126,7 +131,7 @@ function Register_Custom_sidebars()
         register_sidebar($sidebar);
     }
 }
-add_action('widgets_init', 'register_custom_sidebars');
+add_action('widgets_init', 'Register_Custom_sidebars');
 
 add_theme_support('post-thumbnails');
 set_post_thumbnail_size(145, 105, true);
@@ -134,78 +139,77 @@ set_post_thumbnail_size(145, 105, true);
 
 /**
  * Register Main Navigation Menu
- * 
+ *
  * @return [type]
  */
-function Register_Main_menu() 
+function Register_Main_menu()
 {
     register_nav_menu('main-menu', 'Main Menu');
 }
-add_action('after_setup_theme', 'register_main_menu');
-
+add_action('after_setup_theme', 'Register_Main_menu');
 
 /**
  * [Description Walker_Nav_Menu_Dropdown]
- * 
+ *
  * @category Description
  * @package  Custom
  * @author   Greg Miller <hello@gregmiller.io>
  * @license  GPL https://www.gnu.org/licenses/gpl-3.0.html
  * @link     https://github.com/shrinkray/JUS
  */
-class Walker_Nav_Menu_Dropdown extends Walker_Nav_Menu
+class WalkerNavMenuDropdown extends Walker_Nav_Menu
 {
     /**
-     * Start level output 
-     * 
+     * Start level output
+     *
      * @param mixed $output the output.
      * @param int   $depth  depth of the item.
      * @param array $args   additional arguments.
-     * 
+     *
      * @return [type]
      */
-    function startLvl(&$output, $depth = 0, $args = array())
+    public function startLvl(&$output, $depth = 0, $args = array())
     {
         // Don't output children opening tag (<ul>)
     }
 
     /**
      * Don't output children opening tag (<ul>)
-     * 
+     *
      * @param mixed $output the output.
      * @param int   $depth  depth of item.
      * @param array $args   additional arguments
-     * 
+     *
      * @return [type]
      */
-    function endLvl(&$output, $depth = 0, $args = array())
+    public function endLvl(&$output, $depth = 0, $args = array())
     {
         // Don't output children closing tag
     }
 
     /**
      * Add spacing to the title based on depth
-     * 
+     *
      * @param mixed $output the output
      * @param mixed $item   title of post
      * @param int   $depth  depth of item
      * @param array $args   additional args
      * @param int   $id     index number
-     * 
+     *
      * @return [type]
      */
-    function startEl(&$output, $item, $depth = 0, $args = array(), $id = 0)
+    public function startEl(&$output, $item, $depth = 0, $args = array(), $id = 0)
     {
         // Add spacing to the title based on the depth
         $item->title = str_repeat("&nbsp;", $depth * 4) . $item->title;
 
         $attributes  = !empty($item->attr_title) ? ' 
         title="' . esc_attr($item->attr_title) . '"' : '';
-        $attributes .= !empty($item->target) ? ' target="' . 
+        $attributes .= !empty($item->target) ? ' target="' .
         esc_attr($item->target) . '"' : '';
-        $attributes .= !empty($item->xfn) ? ' rel="' . 
+        $attributes .= !empty($item->xfn) ? ' rel="' .
         esc_attr($item->xfn) . '"' : '';
-        $attributes .= !empty($item->url) ? ' value="' . 
+        $attributes .= !empty($item->url) ? ' value="' .
         esc_attr($item->url) . '"' : '';
 
         // Ensure $args is an object and link_before is set
@@ -216,37 +220,43 @@ class Walker_Nav_Menu_Dropdown extends Walker_Nav_Menu
 
         $item_output = '<option' . $attributes . '>';
         $item_output .= $link_before . apply_filters(
-            'the_title', $item->title, $item->ID
+            'the_title',
+            $item->title,
+            $item->ID
         );
         $item_output .= '</option>';
 
         $output .= apply_filters(
-            'walker_nav_menu_start_el', $item_output, $item, $depth, $args
+            'walker_nav_menu_start_el',
+            $item_output,
+            $item,
+            $depth,
+            $args
         );
     }
 
     /**
      * Replace closing </li> with the option tag
-     * 
+     *
      * @param mixed $output replacement tag
      * @param mixed $item   working content
      * @param int   $depth  location in the array
      * @param array $args   additional arguments
-     * 
+     *
      * @return [type]
      */
-    function endEl(&$output, $item, $depth = 0, $args = array())
+    public function endEl(&$output, $item, $depth = 0, $args = array())
     {
-        $output .= "</option>\n"; 
+        $output .= "</option>\n";
     }
 }
 
 /**
  * Custom functions
- * 
+ *
  * @return [type]
  */
-function uxAuthors() 
+function uxAuthors()
 {
     if (function_exists('coauthors_posts_links')) {
         coauthors_posts_links("&#44; ", '&#44; ', '', '', true);
@@ -257,12 +267,12 @@ function uxAuthors()
 
 /**
  * Create terms
- * 
+ *
  * @param string $separator Type of separator
- * 
+ *
  * @return [type]
  */
-function uxIssue($separator = '') 
+function uxIssue($separator = '')
 {
     global $post;
     $terms = get_the_terms($post->ID, 'issue');
@@ -287,12 +297,12 @@ require_once get_template_directory() . '/inc/shortcodes.php';
 
 /**
  * Custom search filter
- * 
+ *
  * @param mixed $query boolean
- * 
+ *
  * @return [type]
  */
-function Search_filter($query) 
+function Search_filter($query)
 {
     if ($query->is_search) {
         $query->set('post_type', 'post');
@@ -302,18 +312,18 @@ function Search_filter($query)
 
 /**
  * Catch the first image in the post content
- * 
+ *
  * @return [type]
  */
-function catchThatImage() 
+function catchThatImage()
 {
     global $post;
     $first_img = '';
     ob_start();
     ob_end_clean();
     $output = preg_match_all(
-        '/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', 
-        $post->post_content, 
+        '/<img.+src=[\'"]([^\'"]+)[\'"].*>/i',
+        $post->post_content,
         $matches
     );
     $first_img = $matches[1][0];
@@ -328,12 +338,12 @@ function catchThatImage()
 // Grab alt text from attachments
 /**
  * Grab all text from attachments
- * 
+ *
  * @param mixed $postID post ID
- * 
+ *
  * @return [type]
  */
-function grabAlt($postID) 
+function grabAlt($postID)
 {
     $args = [
         'post_type' => 'attachment',
@@ -352,12 +362,12 @@ function grabAlt($postID)
 
 /**
  * Grab attachment image
- * 
+ *
  * @param mixed $postID identifier
- * 
+ *
  * @return [type]
  */
-function grabAttachmentImage($postID) 
+function grabAttachmentImage($postID)
 {
     $args = [
         'post_type' => 'attachment',
@@ -376,10 +386,10 @@ function grabAttachmentImage($postID)
 
 /**
  * Custom read more link
- * 
+ *
  * @return [type]
  */
-function uxReadMoreLink() 
+function uxReadMoreLink()
 {
     _e(
         "<!--:en-->Read More<!--:-->" .
@@ -387,40 +397,40 @@ function uxReadMoreLink()
         "<!--:KO-->자세히 읽기<!--:-->" .
         "<!--:pt-->Leia mais<!--:-->" .
         "<!--:ja-->続きを読む<!--:-->" .
-        "<!--:es-->Leer más<!--:-->", 
+        "<!--:es-->Leer más<!--:-->",
         'ux'
     );
 }
 
 /**
  * Custom leigh blurb
- * 
- * @return [type] 
+ *
+ * @return [type]
  */
-function uxLeighBlurb() 
+function uxLeighBlurb()
 {
     $text = [
-        ['lang' => 'en', 'text' => 
+        ['lang' => 'en', 'text' =>
             'Read more Rubes cartoons or download the new daily 
             Rubes app at rubescartoons.com'
         ],
-        ['lang' => 'zh', 'text' => 
+        ['lang' => 'zh', 'text' =>
             '在 rubescartoons.com 阅读更多 Rubes 卡通，或下载最新的每日 Rubes 应用软件'
         ],
-        ['lang' => 'KO', 'text' => 
+        ['lang' => 'KO', 'text' =>
             '기타 Rubes 만화를 일거나 새로운 Rubes 앱을 rubescartoons.com에서 다운로드하십시오'
         ],
-        ['lang' => 'es', 'text' => 
+        ['lang' => 'es', 'text' =>
             'Lea más historietas de Rubes o descargue la nueva aplicación 
             diaria de Rubes en rubescartoons.com'
         ],
-        ['lang' => 'pt', 'text' => 
+        ['lang' => 'pt', 'text' =>
             'Lei mais cartoons do Rubes ou faça o download do novo aplicativo 
             diário do Rubes em rubescartoons.com'
         ],
-        ['lang' => 'ja', 'text' => 
+        ['lang' => 'ja', 'text' =>
             'rubescartoons.comで、Rubesコミックの閲覧や新しいRubesアプリをダウンロードすることができます。'
-        ]
+         ]
     ];
     $string = '';
     foreach ($text as $langs) {
