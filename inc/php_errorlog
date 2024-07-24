@@ -1,0 +1,1 @@
+[28-Jan-2018 05:27:52 CST6CDT] PHP Fatal error:  Call to undefined function add_action() in /home/uxpapubs/public_html/uxpajournal.org/wp-content/themes/JUS/inc/taxonomies.php on line 30

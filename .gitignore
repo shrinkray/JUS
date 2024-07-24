@@ -1,0 +1,54 @@
+# πGitIgnore July 24, 2024
+# @author shrinkray
+
+# Ignore log files and databases
+*.log
+*.sql
+*.sqlite
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Ignore compressed files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Ignore node modules and build directories
+node_modules/
+bower_components/
+build/
+
+# Ignore SASS cache files
+.sass-cache/
+
+# Ignore Composer vendor directory
+vendor/
+
+# Ignore PHPStorm project files
+.idea/
+
+# Ignore Vagrant files
+.vagrant/
+
+# Ignore environment variables
+.env
+
+# Ignore any other sensitive files
+secret_settings.php
+*.key
+*.pem

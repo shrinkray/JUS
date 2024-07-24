@@ -1,0 +1,3 @@
+[28-Jan-2018 05:27:52 CST6CDT] PHP Fatal error:  Class 'nusoap_base' not found in /home/uxpapubs/public_html/uxpajournal.org/wp-content/themes/JUS/inc/lib/class.soap_fault.php on line 14
+[28-Jan-2018 05:27:52 CST6CDT] PHP Fatal error:  Class 'nusoap_base' not found in /home/uxpapubs/public_html/uxpajournal.org/wp-content/themes/JUS/inc/lib/class.wsdl.php on line 15
+[28-Jan-2018 05:27:52 CST6CDT] PHP Fatal error:  Class 'nusoap_client' not found in /home/uxpapubs/public_html/uxpajournal.org/wp-content/themes/JUS/inc/lib/nusoapmime.php on line 54
